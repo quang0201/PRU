@@ -4,7 +4,7 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 26
-  productGUID: 00000000000000000000000000000000
+  productGUID: a943e5d59d1b9f344962f15bcfa80622
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
@@ -754,7 +754,7 @@ PlayerSettings:
   cloudProjectId: 23ebd003-cb95-47ef-a1fc-621282255efe
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: 
+  projectName: FarmGame2D 2024-01-13_22-18-41
   organizationId: tranbinhminh211002
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
