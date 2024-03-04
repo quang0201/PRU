@@ -36,7 +36,6 @@ namespace HappyHarvest
             {
                 foreach (var tile in mapping.Tiles)
                 {
-                    m_Mapping[tile] = mapping.StepSounds;
                 }
             }
         }

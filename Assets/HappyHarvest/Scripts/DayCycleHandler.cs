@@ -127,24 +127,24 @@ namespace HappyHarvest
 
         public static void RegisterShadow(ShadowInstance shadow)
         {
-#if UNITY_EDITOR
-            //in the editor when not running, we find the instance manually. Less efficient but not a problem at edit time
-            //allow to be able to previz shadow in editor 
-            if (!Application.isPlaying)
-            {
-                var instance = GameObject.FindObjectOfType<DayCycleHandler>();
-                if (instance != null)
-                {
-                    instance.m_Shadows.Add(shadow);
-                }
-            }
-            else
-            {
-#endif
-                GameManager.Instance.DayCycleHandler.m_Shadows.Add(shadow);
-#if UNITY_EDITOR
-            }
-#endif
+//#if UNITY_EDITOR
+//            //in the editor when not running, we find the instance manually. Less efficient but not a problem at edit time
+//            //allow to be able to previz shadow in editor 
+//            if (!Application.isPlaying)
+//            {
+//                var instance = GameObject.FindObjectOfType<DayCycleHandler>();
+//                if (instance != null)
+//                {
+//                    instance.m_Shadows.Add(shadow);
+//                }
+//            }
+//            else
+//            {
+//#endif
+//                GameManager.Instance.DayCycleHandler.m_Shadows.Add(shadow);
+//#if UNITY_EDITOR
+//            }
+//#endif
         }
 
         public static void UnregisterShadow(ShadowInstance shadow)

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -24,6 +25,13 @@ namespace HappyHarvest
             public string SceneName;
             public TerrainDataSave TerrainData;
         }
+        [System.Serializable]
+        private class RootData
+        {
+            public PlayerSaveData PlayerData;
+            public DayCycleHandlerSaveData TimeSaveData;
+            public SaveData[] ScenesData;
+        }
 
         private static Dictionary<string, SceneData> s_ScenesDataLookup = new Dictionary<string, SceneData>();
 
@@ -31,7 +39,6 @@ namespace HappyHarvest
         {
             GameManager.Instance.Player.Save(ref s_CurrentData.PlayerData);
             GameManager.Instance.DayCycleHandler.Save(ref s_CurrentData.TimeSaveData);
-
             string savefile = Application.persistentDataPath + "/save.sav";
             File.WriteAllText(savefile, JsonUtility.ToJson(s_CurrentData));
         }
@@ -40,7 +47,6 @@ namespace HappyHarvest
         {
             string savefile = Application.persistentDataPath + "/save.sav";
             string content = File.ReadAllText(savefile);
-
             s_CurrentData = JsonUtility.FromJson<SaveData>(content);
             
             SceneManager.sceneLoaded += SceneLoaded;
@@ -69,6 +75,8 @@ namespace HappyHarvest
                     SceneName = sceneName,
                     TerrainData = data
                 };
+                Debug.Log(sceneName);
+                Debug.Log(data);
             }
         }
 

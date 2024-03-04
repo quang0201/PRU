@@ -257,7 +257,7 @@ namespace HappyHarvest
         }
     }
 
-    [Serializable]
+    [System.Serializable]
     public class InventorySaveData
     {
         public int Amount;

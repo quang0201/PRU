@@ -4,7 +4,7 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 26
-  productGUID: a943e5d59d1b9f344962f15bcfa80622
+  productGUID: dd9d4eebef89c3742bc3d37a5580d5f6
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
@@ -76,6 +76,7 @@ PlayerSettings:
   androidMinimumWindowWidth: 400
   androidMinimumWindowHeight: 300
   androidFullscreenMode: 1
+  androidAutoRotationBehavior: 1
   defaultIsNativeResolution: 1
   macRetinaSupport: 1
   runInBackground: 0
@@ -136,6 +137,8 @@ PlayerSettings:
   vulkanEnableLateAcquireNextImage: 0
   vulkanEnableCommandBufferRecycling: 1
   loadStoreDebugModeEnabled: 0
+  visionOSBundleVersion: 1.0
+  tvOSBundleVersion: 1.0
   bundleVersion: 1.0
   preloadedAssets: []
   metroInputSource: 0
@@ -676,14 +679,14 @@ PlayerSettings:
   apiCompatibilityLevelPerPlatform: {}
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: FarmGame2D
+  metroPackageName: PRU
   metroPackageVersion: 
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
   metroCertificateIssuer: 
   metroCertificateNotAfter: 0000000000000000
-  metroApplicationDescription: FarmGame2D
+  metroApplicationDescription: PRU
   wsaImages: {}
   metroTileShortName: 
   metroTileShowName: 0
@@ -754,7 +757,7 @@ PlayerSettings:
   cloudProjectId: 23ebd003-cb95-47ef-a1fc-621282255efe
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: FarmGame2D 2024-01-13_22-18-41
+  projectName: 
   organizationId: tranbinhminh211002
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0

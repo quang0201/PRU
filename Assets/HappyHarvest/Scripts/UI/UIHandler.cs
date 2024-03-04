@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Template2DCommon;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Cursor = UnityEngine.Cursor;
@@ -22,19 +23,19 @@ namespace HappyHarvest
             Interact,
             System
         }
-        
+
         [Header("Cursor")]
         public Texture2D NormalCursor;
         public Texture2D InteractCursor;
 
         [Header("UI Document")]
         public VisualTreeAsset MarketEntryTemplate;
-        
-        [Header("Sounds")] 
+
+        [Header("Sounds")]
         public AudioClip MarketSellSound;
-        
+
         protected UIDocument m_Document;
-        
+
         protected List<VisualElement> m_InventorySlots;
         protected List<Label> m_ItemCountLabels;
 
@@ -54,10 +55,13 @@ namespace HappyHarvest
         protected SettingMenu m_SettingMenu;
         protected WarehouseUI m_WarehouseUI;
 
+        private Button m_SaveGameButton;
+        private Button m_LoadGameButton;
+
         // Fade to balck helper
         protected VisualElement m_Blocker;
         protected System.Action m_FadeFinishClbk;
-        
+
         private Label m_SunLabel;
         private Label m_RainLabel;
         private Label m_ThunderLabel;
@@ -105,7 +109,7 @@ namespace HappyHarvest
             m_WarehouseUI = new WarehouseUI(m_Document.rootVisualElement.Q<VisualElement>("WarehousePopup"), MarketEntryTemplate);
 
             m_Blocker = m_Document.rootVisualElement.Q<VisualElement>("Blocker");
-            
+
             m_Blocker.style.opacity = 1.0f;
             m_Blocker.schedule.Execute(() => { FadeFromBlack(() => { }); }).ExecuteLater(500);
 
@@ -117,22 +121,36 @@ namespace HappyHarvest
             m_SunLabel = m_Document.rootVisualElement.Q<Label>("SunLabel");
             m_RainLabel = m_Document.rootVisualElement.Q<Label>("RainLabel");
             m_ThunderLabel = m_Document.rootVisualElement.Q<Label>("ThunderLabel");
-            
+
             m_SunLabel.AddManipulator(new Clickable(() => { GameManager.Instance.WeatherSystem?.ChangeWeather(WeatherSystem.WeatherType.Sun); }));
             m_RainLabel.AddManipulator(new Clickable(() => { GameManager.Instance.WeatherSystem?.ChangeWeather(WeatherSystem.WeatherType.Rain); }));
             m_ThunderLabel.AddManipulator(new Clickable(() => { GameManager.Instance.WeatherSystem?.ChangeWeather(WeatherSystem.WeatherType.Thunder); }));
         }
-        
-        
+
+
         void Update()
         {
             m_TimerLabel.text = GameManager.Instance.CurrentTimeAsString();
+            if (Input.GetKeyDown(KeyCode.M))
+            {
+                if (m_SettingMenu.IsVisible)
+                {
+                    GameManager.Instance.Resume();
+                    m_SettingMenu.CloseM();
+                }
+                else
+                {
+                    m_SettingMenu.OpenM();
+                    GameManager.Instance.Pause();
+
+                }
+            }
         }
 
         private void OnApplicationFocus(bool hasFocus)
         {
             m_HaveFocus = hasFocus;
-            if(!hasFocus)
+            if (!hasFocus)
                 Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
             else
                 ChangeCursor(m_CurrentCursorType);
@@ -151,8 +169,8 @@ namespace HappyHarvest
 
         public static void OpenMarket()
         {
-           s_Instance.OpenMarket_Internal();
-           GameManager.Instance.Pause();
+            s_Instance.OpenMarket_Internal();
+            GameManager.Instance.Pause();
         }
 
         public static void CloseMarket()
@@ -193,7 +211,7 @@ namespace HappyHarvest
             s_Instance.m_SunLabel.EnableInClassList("on-button", currentWeather == WeatherSystem.WeatherType.Sun);
             s_Instance.m_RainLabel.EnableInClassList("on-button", currentWeather == WeatherSystem.WeatherType.Rain);
             s_Instance.m_ThunderLabel.EnableInClassList("on-button", currentWeather == WeatherSystem.WeatherType.Thunder);
-            
+
             s_Instance.m_SunLabel.EnableInClassList("off-button", currentWeather != WeatherSystem.WeatherType.Sun);
             s_Instance.m_RainLabel.EnableInClassList("off-button", currentWeather != WeatherSystem.WeatherType.Rain);
             s_Instance.m_ThunderLabel.EnableInClassList("off-button", currentWeather != WeatherSystem.WeatherType.Thunder);
@@ -209,7 +227,7 @@ namespace HappyHarvest
         private void OpenMarket_Internal()
         {
             m_MarketPopup.visible = true;
-            
+
             //we open the Sell Tab by default
             ToggleToSell();
 
@@ -223,7 +241,7 @@ namespace HappyHarvest
 
             m_SellButton.SetEnabled(false);
             m_BuyButton.SetEnabled(true);
-            
+
             //clear all the existing entry. A good target for optimization if profiling show bad perf in UI is to pool
             //instead of delete/recreate entries
             m_MarketContentScrollview.contentContainer.Clear();
@@ -245,7 +263,7 @@ namespace HappyHarvest
                 {
                     int count = GameManager.Instance.Player.Inventory.Entries[i].StackSize;
                     button.text = $"Sell {count} for {product.SellPrice * count}";
-                    
+
                     int i1 = i;
                     button.clicked += () =>
                     {
@@ -259,19 +277,19 @@ namespace HappyHarvest
                     button.SetEnabled(false);
                     button.text = "Cannot Sell";
                 }
-                
+
                 m_MarketContentScrollview.Add(clone.contentContainer);
             }
         }
-        
+
         private void ToggleToBuy()
         {
             m_SellButton.RemoveFromClassList("activeButton");
             m_BuyButton.AddToClassList("activeButton");
-            
+
             m_BuyButton.SetEnabled(false);
             m_SellButton.SetEnabled(true);
-            
+
             //clear all the existing entry. A good target for optimization if profiling show bad perf in UI is to pool
             //instead of delete/recreate entries
             m_MarketContentScrollview.contentContainer.Clear();
@@ -284,7 +302,7 @@ namespace HappyHarvest
 
                 clone.Q<Label>("ItemName").text = item.DisplayName;
                 clone.Q<VisualElement>("ItemIcone").style.backgroundImage = new StyleBackground(item.ItemSprite);
-                
+
                 var button = clone.Q<Button>("ActionButton");
 
                 if (GameManager.Instance.Player.Coins >= item.BuyPrice)
@@ -309,7 +327,7 @@ namespace HappyHarvest
                     button.text = $"Cannot afford cost of {item.BuyPrice}";
                     button.SetEnabled(false);
                 }
-                
+
                 m_MarketContentScrollview.Add(clone.contentContainer);
             }
         }
@@ -332,7 +350,7 @@ namespace HappyHarvest
         public static void FadeFromBlack(System.Action onFinished)
         {
             s_Instance.m_FadeFinishClbk = onFinished;
-            
+
             s_Instance.m_Blocker.schedule.Execute(() =>
             {
                 s_Instance.m_Blocker.style.opacity = 0.0f;

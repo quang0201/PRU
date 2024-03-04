@@ -874,6 +874,7 @@
     "m_OutputNode": {
         "m_Id": ""
     },
+    "m_SubDatas": [],
     "m_ActiveTargets": [
         {
             "m_Id": "9e8086e8f4614c39838d8a1892e76556"
@@ -1151,7 +1152,7 @@
     "m_Group": {
         "m_Id": ""
     },
-    "m_Name": "BaseSprite",
+    "m_Name": "SubGraph_BaseSprite",
     "m_DrawState": {
         "m_Expanded": true,
         "m_Position": {

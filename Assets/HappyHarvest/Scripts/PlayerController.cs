@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Template2DCommon;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -66,6 +68,7 @@ namespace HappyHarvest
         private int m_DirXHash = Animator.StringToHash("DirX");
         private int m_DirYHash = Animator.StringToHash("DirY");
         private int m_SpeedHash = Animator.StringToHash("Speed");
+        private bool isPaused = false;
 
         void Awake()
         {
@@ -218,7 +221,24 @@ namespace HappyHarvest
             {
                 SaveSystem.Load();
             }
+            if (Keyboard.current.pKey.wasPressedThisFrame)
+            {
+                isPaused = !isPaused;
+
+                if (isPaused)
+                {
+                    // Tạm dừng trò chơi
+                    Time.timeScale = 0f;
+                }
+                else
+                {
+                    // Tiếp tục trò chơi
+                    Time.timeScale = 1f;
+                }
+            }
+            
         }
+
 
         void UseObject()
         {
@@ -464,7 +484,6 @@ namespace HappyHarvest
     public struct PlayerSaveData
     {
         public Vector3 Position;
-        
         public int Coins;
         public List<InventorySaveData> Inventory;
     }

@@ -1,3 +1,4 @@
+using HappyHarvest;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,6 +17,11 @@ namespace Template2DCommon
         private Button m_CloseButton;
         private Button m_QuitButton;
 
+        private Button m_SaveGameButton;
+        private Button m_LoadGameButton;
+
+        private Label m_Message;
+
         private DropdownField m_ResolutionDropdown;
         private Toggle m_FullscreenToggle;
 
@@ -24,7 +30,7 @@ namespace Template2DCommon
         private Slider m_SFXVolumeSlider;
 
         private List<Resolution> m_AvailableResolutions;
-    
+
         public SettingMenu(VisualElement root)
         {
             m_Root = root.Q<VisualElement>("SettingMenu");
@@ -32,6 +38,9 @@ namespace Template2DCommon
 
             m_CloseButton = m_Root.Q<Button>("CloseButton");
             m_QuitButton = m_Root.Q<Button>("QuitButton");
+
+            m_SaveGameButton = m_Root.Q<Button>("SaveGame");
+            m_SaveGameButton = m_Root.Q<Button>("LoadGame");
 
             m_ResolutionDropdown = m_Root.Q<DropdownField>("ResolutionDropdown");
             m_FullscreenToggle = m_Root.Q<Toggle>("FullscreenToggle");
@@ -45,16 +54,20 @@ namespace Template2DCommon
                 SoundManager.Instance.Sound.MainVolume = evt.newValue;
                 SoundManager.Instance.UpdateVolume();
             });
+
             m_BGMVolumeSlider.RegisterValueChangedCallback(evt =>
             {
                 SoundManager.Instance.Sound.BGMVolume = evt.newValue;
                 SoundManager.Instance.UpdateVolume();
             });
+
             m_SFXVolumeSlider.RegisterValueChangedCallback(evt =>
             {
                 SoundManager.Instance.Sound.SFXVolume = evt.newValue;
                 SoundManager.Instance.UpdateVolume();
             });
+
+            m_SaveGameButton.clicked += SaveGame;
 
             m_Root.visible = false;
 
@@ -69,24 +82,24 @@ namespace Template2DCommon
                     Open();
                 }
             };
-
+            
             m_CloseButton.clicked += Close;
             m_QuitButton.clicked += Application.Quit;
-        
+
             //fill resolution dropdown
             m_AvailableResolutions = new List<Resolution>();
-        
+
             List<string> resEntries = new List<string>();
             foreach (var resolution in Screen.resolutions)
             {
                 //if we already have a resolution with same width & height, we skip.
-                if(m_AvailableResolutions.FindIndex(r => r.width == resolution.width && r.height == resolution.height) != -1)
+                if (m_AvailableResolutions.FindIndex(r => r.width == resolution.width && r.height == resolution.height) != -1)
                     continue;
-            
-                var resName = resolution.width+"x"+resolution.height;
+
+                var resName = resolution.width + "x" + resolution.height;
                 resEntries.Add(resName);
                 m_AvailableResolutions.Add(resolution);
-            
+
             }
 
             m_ResolutionDropdown.choices = resEntries;
@@ -95,7 +108,7 @@ namespace Template2DCommon
             {
                 if (m_ResolutionDropdown.index == -1)
                     return;
-            
+
                 var res = m_AvailableResolutions[m_ResolutionDropdown.index];
                 Screen.SetResolution(res.width, res.height, m_FullscreenToggle.value);
             });
@@ -106,7 +119,14 @@ namespace Template2DCommon
                 Screen.fullScreen = evt.newValue;
             });
         }
-
+        void SaveGame()
+        {
+            SaveSystem.Save();
+        }
+        void LoadGame()
+        {
+            SaveSystem.Load();
+        }
         bool CompareResolution(Resolution a, Resolution b)
         {
             return a.width == b.width && a.height == b.height && a.refreshRateRatio.CompareTo(b.refreshRateRatio) == 0;
@@ -117,13 +137,13 @@ namespace Template2DCommon
             m_MainVolumeSlider.SetValueWithoutNotify(SoundManager.Instance.Sound.MainVolume);
             m_BGMVolumeSlider.SetValueWithoutNotify(SoundManager.Instance.Sound.BGMVolume);
             m_SFXVolumeSlider.SetValueWithoutNotify(SoundManager.Instance.Sound.SFXVolume);
-        
+
             string currentRes = Screen.width + "x" + Screen.height;
             m_ResolutionDropdown.label = currentRes;
             m_ResolutionDropdown.SetValueWithoutNotify(currentRes);
-        
+
             m_Root.visible = true;
-            OnOpen.Invoke();   
+            OnOpen.Invoke();
         }
 
         void Close()
@@ -132,6 +152,20 @@ namespace Template2DCommon
             SoundManager.Instance.Save();
             m_Root.visible = false;
             OnClose.Invoke();
+        }
+
+        public bool IsVisible => m_Root.visible;
+
+        public void OpenM()
+        {
+            m_Root.visible = true;
+            OnOpen?.Invoke();
+        }
+
+        public void CloseM()
+        {
+            m_Root.visible = false;
+            OnClose?.Invoke();
         }
     }
 }
